@@ -1,0 +1,8 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+SELECT DISTINCT ?lang {
+	?s ?p ?o.
+	FILTER isLiteral(?o). 
+	BIND(substr(lang(?o),1,2) as ?lang).
+	FILTER(?lang!="").
+}

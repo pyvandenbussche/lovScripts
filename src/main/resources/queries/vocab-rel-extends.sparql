@@ -1,0 +1,16 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+ 
+SELECT DISTINCT ?source ?elem {
+	{?source owl:inverseOf ?elem.}
+	UNION{?source rdfs:domain ?elem.}
+	UNION{?source rdfs:range ?elem.}
+	UNION{?elem rdfs:domain ?source.}
+	UNION{?elem rdfs:range ?source.}
+
+	FILTER(!isBlank(?elem))
+	FILTER(!STRSTARTS(STR(?elem), ?nsp))
+	FILTER(STRSTARTS(STR(?source), ?nsp))
+}ORDER BY ?source

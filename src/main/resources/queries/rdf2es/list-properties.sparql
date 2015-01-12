@@ -1,0 +1,35 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+SELECT DISTINCT ?property {
+  # DISTINCT to cope with properties that are typed both as rdf:Property and owl:XXXProperty
+  {
+    # RDFS
+    ?property a rdf:Property
+  } UNION {
+    # OWL
+    ?property a owl:DatatypeProperty
+  } UNION {
+    ?property a owl:ObjectProperty
+  } UNION {
+    ?property a owl:AnnotationProperty
+  } UNION {
+    ?property a owl:FunctionalProperty
+  } UNION {
+    ?property a owl:InverseFunctionalProperty
+  } UNION {
+    ?property a owl:IrreflexiveProperty
+  } UNION {
+    ?property a owl:ReflexiveProperty
+  } UNION {
+    ?property a owl:SymmetricProperty
+  } UNION {
+    ?property a owl:TransitiveProperty
+  } UNION {
+    ?property a owl:OntologyProperty
+  } UNION {
+    ?property a owl:AsymmetricProperty
+  }
+  # Skip blank node properties -- we couldn't use them in data
+  FILTER (isURI(?property))
+}

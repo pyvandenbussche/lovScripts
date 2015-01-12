@@ -1,0 +1,7 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+# List agents in LOV. Requires that the agent (Organization) has a foaf:name
+SELECT DISTINCT ?agent {
+    ?agent a foaf:Organization.
+    ?agent foaf:name ?name.
+}

@@ -1,0 +1,14 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX dce: <http://purl.org/dc/elements/1.1/>
+SELECT DISTINCT ?issued {
+	{
+		{?uri dcterms:issued ?issued.}
+		UNION{?uri dce:issued ?issued.}
+	}UNION{
+		?onto a owl:Ontology.
+		{?onto dcterms:issued ?issued.}
+		UNION{?onto dce:issued ?issued.}
+	}	
+}ORDER BY ASC(?issued) LIMIT 1

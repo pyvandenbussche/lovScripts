@@ -1,0 +1,15 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>
+
+SELECT DISTINCT ?source ?elem {
+	{?source rdfs:subPropertyOf ?elem}
+	UNION{?source rdfs:subClassOf ?elem}
+	UNION{?source skos:broadMatch ?elem}
+	UNION{?elem a owl:Class. ?source owl:unionOf ?union. ?union list:member ?source.}
+	FILTER(!isBlank(?elem))
+	FILTER(!STRSTARTS(STR(?elem), ?nsp))
+	FILTER(STRSTARTS(STR(?source), ?nsp))
+}ORDER BY ?source

@@ -1,0 +1,18 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+ 
+SELECT DISTINCT ?source ?elem {
+	{?source owl:equivalentProperty ?elem.}
+	UNION{?source owl:sameAs ?elem.}
+	UNION{?source owl:equivalentClass ?elem.}
+	UNION{?elem owl:equivalentProperty ?source.}
+	UNION{?elem owl:equivalentClass ?source.}
+	UNION{?source skos:exactMatch ?elem.}
+	UNION{?elem skos:exactMatch ?source.}
+
+	FILTER(!isBlank(?elem))
+	FILTER(!STRSTARTS(STR(?elem), ?nsp))
+	FILTER(STRSTARTS(STR(?source), ?nsp))
+}ORDER BY ?source

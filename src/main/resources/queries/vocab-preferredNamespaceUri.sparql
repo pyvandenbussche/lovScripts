@@ -1,0 +1,7 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX vann:  <http://purl.org/vocab/vann/>
+SELECT ?nsp {
+  	# GET the vann:preferredNamespaceUri
+  ?uri vann:preferredNamespaceUri ?nsp.
+} LIMIT 1

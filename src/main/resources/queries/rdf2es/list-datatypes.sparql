@@ -1,0 +1,7 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?datatype {
+  # RDFS Datatype
+  ?datatype a rdfs:Datatype
+  # Skip blank node classes -- we can't use them in data
+  FILTER (isURI(?datatype))
+}

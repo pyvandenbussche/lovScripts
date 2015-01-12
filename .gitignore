@@ -1,0 +1,13 @@
+.classpath
+.settings/
+target/
+languages.rdf
+lov.n3
+lov.n3.gz
+lov.rdf
+lov.nq
+lov.nq.gz
+lov_aggregator.nq
+lov_aggregator.zip
+lov_metrics.n3
+.project

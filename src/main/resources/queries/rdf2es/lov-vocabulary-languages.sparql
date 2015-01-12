@@ -1,0 +1,13 @@
+﻿PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX bibo:<http://purl.org/ontology/bibo/>
+PREFIX dcterms:<http://purl.org/dc/terms/>
+PREFIX dcat:<http://www.w3.org/ns/dcat#>
+
+SELECT DISTINCT ?lang{
+  GRAPH <http://lov.okfn.org/dataset/lov>{
+	?vocab dcterms:language ?langURI.
+	?langURI rdfs:label ?lang
+  }
+}

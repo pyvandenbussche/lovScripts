@@ -1,0 +1,6 @@
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+
+# Get AltUris (owl:sameAs) for one agent
+SELECT DISTINCT ?altUri {
+    ?agent owl:sameAs ?altUri.
+}

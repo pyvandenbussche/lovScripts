@@ -1,0 +1,17 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX dce: <http://purl.org/dc/elements/1.1/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+SELECT DISTINCT ?description {
+	{
+		{?uri dcterms:description ?description.}
+		UNION{?uri dce:description ?description.}
+		UNION{?uri rdfs:comment ?description.}
+	}UNION{
+		?onto a owl:Ontology.
+		{?onto dcterms:description ?description.}
+		UNION{?onto dce:description ?description.}
+		UNION{?onto rdfs:comment ?description.}
+	}	
+}ORDER BY ASC(?description)

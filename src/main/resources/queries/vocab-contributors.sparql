@@ -1,0 +1,28 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX dce: <http://purl.org/dc/elements/1.1/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+SELECT DISTINCT ?agent ?agentLbl {
+	{
+		{?uri dcterms:contributor ?agent.}
+		UNION{?uri dce:contributor ?agent.}
+		FILTER(isIri(?agent))
+		OPTIONAL{
+			{?agent foaf:name ?agentLbl}
+			UNION{?agent rdfs:label ?agentLbl}
+			FILTER(isLiteral(?agentLbl))
+		}
+	}UNION{
+		?onto a owl:Ontology.
+		{?onto dcterms:contributor ?agent.}
+		UNION{?onto dce:contributor ?agent.}
+		FILTER(isIri(?agent))
+		OPTIONAL{
+			{?agent foaf:name ?agentLbl}
+			UNION{?agent rdfs:label ?agentLbl}
+			FILTER(isLiteral(?agentLbl))
+		}
+	}	
+}

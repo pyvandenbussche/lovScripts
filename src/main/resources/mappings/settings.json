@@ -1,0 +1,50 @@
+{
+     "analysis" : {
+        "filter" : {
+		   "autocomplete_ngram_filter" : {
+              "max_gram" : 1000,
+              "min_gram" : 1,
+              "type" : "edge_ngram"
+           }
+        },
+        "analyzer" : {
+           "autocomplete_ngram_index" : {
+              "filter" : [
+                 "lowercase",
+                 "autocomplete_ngram_filter"
+              ],
+              "tokenizer" : "keyword"
+           },
+           "autocomplete_ngram_search" : {
+              "filter" : [
+                 "lowercase"
+              ],
+              "tokenizer" : "keyword"
+           },
+           "ngram_analyzer_index" : {
+           	  "filter" : [ "lowercase"],
+              "tokenizer" : "ngram_tokenizer"
+           },
+           "ngram_analyzer_search" : {
+              "filter" : ["lowercase"],
+              "tokenizer" : "keyword"
+           }
+        },
+        "tokenizer" : {
+            "ngram_tokenizer" : {
+                "type" : "nGram",
+                "min_gram" : "2",
+                "max_gram" : "20",
+                "token_chars": [ "letter", "digit", "punctuation" ]
+            }
+        }
+     },
+     "similarity" : {
+		  "bm25" : {
+		    "type" : "BM25",
+		    "k1" : "1.2",
+		    "b" : "0.75",
+		    "discount_overlaps" : true
+		  }
+	}
+}

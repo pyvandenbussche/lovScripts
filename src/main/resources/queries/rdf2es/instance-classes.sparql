@@ -1,0 +1,13 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX voaf: <http://purl.org/vocommons/voaf#>
+PREFIX vann: <http://purl.org/vocab/vann/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+# ?class instance's class (must be in the same vocabulary namespace)
+SELECT DISTINCT ?class {
+
+  ?instance a ?class.
+  BIND(REPLACE(str(?instance), "[^/#]*$", "") AS ?ns)
+  FILTER (STRSTARTS(STR(?class), STR(?ns)))
+}

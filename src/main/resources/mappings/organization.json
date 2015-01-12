@@ -1,0 +1,24 @@
+{
+  "organization": {
+    "properties": {
+	  "uri":{"type" : "string"},
+	  "tags":{
+	    "properties" : {
+	        "label" : {"type" : "string", "index": "not_analyzed"},
+	        "occurrences" : {"type" : "long"}
+	    }
+      },
+	  "name":{
+        "type":"multi_field",
+        "fields":{
+          "name":{ "type":"string"},
+          "ngram":{
+            "search_analyzer" : "ngram_analyzer_search",
+            "index_analyzer" : "ngram_analyzer_index",
+            "type":"string"
+          }
+        }
+      }
+    }
+  }
+}
