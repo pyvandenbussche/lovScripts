@@ -34,8 +34,8 @@
             "ngram_tokenizer" : {
                 "type" : "nGram",
                 "min_gram" : "2",
-                "max_gram" : "20",
-                "token_chars": [ "letter", "digit", "punctuation" ]
+                "max_gram" : "30",
+                "token_chars": ["whitespace", "letter", "digit", "punctuation" ]
             }
         }
      },
