@@ -57,7 +57,7 @@ public abstract class TermDescriber extends SPARQLDescriber {
 //			}
 //			if(labelsString.size()>0)putArrayString(descriptionRoot, "labelsWithoutLang", labelsString);
 //		}
-		//putString(descriptionRoot, "labelsWithoutLang", getLabelFromSource(term));
+		putString(descriptionRoot, "labelsWithoutLang", getLabelFromSource(term));
 		if(tag!=null)putArrayString(descriptionRoot, "tags", tag);
 		// Adds "label" key
 		strLiteralDescriber.describe(term, descriptionRoot);

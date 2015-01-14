@@ -40,7 +40,7 @@
           	"type": "string"
           }
         }
-      },
+      },"labelsWithoutLang": { "type": "completion" },
 	  "metrics.occurrencesInDatasets": { "type": "long" }
     }
   }

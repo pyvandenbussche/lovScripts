@@ -41,6 +41,7 @@
           }
         }
       },
+      "labelsWithoutLang": { "type": "completion" },
 	  "metrics.occurrencesInDatasets": { "type": "long" }
     }
   }
