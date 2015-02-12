@@ -132,7 +132,7 @@ public class Stats extends CmdGeneral {
 					for (String tag : vocab.getTags()) {
 						StatTag statTag = new StatTag(tag);
 						statTag.addOccurrence();
-						if(statTags.indexOf(statTag)>0)statTags.get(statTags.indexOf(statTag)).addOccurrence();
+						if(statTags.indexOf(statTag)>-1)statTags.get(statTags.indexOf(statTag)).addOccurrence();
 						else statTags.add(statTag);
 					}
 				}
