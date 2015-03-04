@@ -31,6 +31,7 @@ public class VocabularyVersionWrapper implements Serializable, Comparable<Vocabu
 	private List<String> relDisjunc;
 	private List<String> relImports;
 	private List<String> languageIds;
+	private boolean isReviewed=false;
 	
 	public VocabularyVersionWrapper(){super();}
 
@@ -185,6 +186,14 @@ public class VocabularyVersionWrapper implements Serializable, Comparable<Vocabu
 
 	public void setLanguageIds(List<String> languageIds) {
 		this.languageIds = languageIds;
+	}
+
+	public boolean isReviewed() {
+		return isReviewed;
+	}
+
+	public void setReviewed(boolean isReviewed) {
+		this.isReviewed = isReviewed;
 	}
 
 	@Override

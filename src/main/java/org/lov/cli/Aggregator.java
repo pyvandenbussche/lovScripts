@@ -245,7 +245,6 @@ public class Aggregator extends CmdGeneral {
 						vocab.setLastModifiedInLOVAt(version.getIssued());
 						vocab.setLastDeref(version.getIssued());
 						vocab.setCommentDeref(null);
-						//TODO add a status manuallyChecked=false ? to the version
 						vocab.addVersion(version);
 						
 						// save the vocab object in MongoDB

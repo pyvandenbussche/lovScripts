@@ -183,6 +183,13 @@
               </jvmSettings>
             </program>
             <program>
+              <mainClass>org.lov.cli.VersionAnalyser</mainClass>
+              <name>versionAnalyser</name>
+              <jvmSettings>
+                <maxMemorySize>512m</maxMemorySize>
+              </jvmSettings>
+            </program>
+            <program>
               <mainClass>org.lov.cli.ElasticsearchIndexLOV</mainClass>
               <name>index-lov</name>
               <jvmSettings>
