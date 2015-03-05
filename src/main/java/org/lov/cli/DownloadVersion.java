@@ -96,7 +96,7 @@ public class DownloadVersion extends CmdGeneral {
 				if(!versionFile.exists())versionFile.createNewFile();
 				OutputStream fopn3 = new BufferedOutputStream(new FileOutputStream(versionFile));
 				RDFDataMgr.write(fopn3, agents.get(0).getVocabModel(), Lang.N3) ;
-				System.out.println(uniqueID+".n3");
+				System.out.println(versionFile.getAbsolutePath());
 			}
 			else System.out.println();
 		} catch (Exception e) {
