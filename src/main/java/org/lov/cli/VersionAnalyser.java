@@ -81,7 +81,7 @@ public class VersionAnalyser extends CmdGeneral {
 			VocabularySuggest vocabVersion = LovBotVocabAnalyser.analyseVersion(versionURI, vocabularyURI, vocabularyNsp,Lang.N3, lovConfig);
 //			result.prettyPrint(log);
 			Gson gson  =new Gson();
-			System.out.println(gson.toJson(vocabVersion));
+			System.out.println(gson.toJson(vocabVersion.toVocabularyVersionWrapper()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

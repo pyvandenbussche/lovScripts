@@ -1,6 +1,6 @@
 package org.lov.objects;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -349,5 +349,56 @@ public class VocabularySuggest{
 		
 		log.info("####### </Summary> #######");
 		
+	}
+	
+	public VocabularyVersionWrapper toVocabularyVersionWrapper(){
+		VocabularyVersionWrapper wrap = new VocabularyVersionWrapper();
+			/*
+	private String name;
+	private Date issued;
+	private boolean isReviewed=false;*/
+		wrap.setFileURL(this.uriInputSearch);
+//		Pattern p = Pattern.compile(".*(\\d{4}-\\d{2}-\\d{2}).*");
+//		Matcher m = p.matcher(this.uriInputSearch);
+//		if (m.find()) {
+//			 try {
+//				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+//				wrap.setIssued(format.parse(m.group(1)));
+//			} catch (ParseException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		else{
+//			wrap.setIssued(new Date());
+//		}
+		wrap.setClassNumber(this.nbClasses);
+		wrap.setPropertyNumber(this.nbProperties);
+		wrap.setInstanceNumber(this.nbInstances);
+		wrap.setDatatypeNumber(this.nbDatatypes);
+		wrap.setRelMetadata(getStringList(this.relMetadata));
+		wrap.setRelSpecializes(getStringList(this.relSpecializes));
+		wrap.setRelGeneralizes(getStringList(this.relGeneralizes));
+		wrap.setRelExtends(getStringList(this.relExtends));
+		wrap.setRelEquivalent(getStringList(this.relEquivalent));
+		wrap.setRelDisjunc(getStringList(this.relDisjunc));
+		wrap.setRelImports(getStringList(this.relImports));
+		wrap.setLanguageIds(getStringLang(this.languages));
+		return wrap;
+	}
+	
+	private List<String> getStringList(List<VocabularySuggest> relList){
+		List<String> out = new ArrayList<>();
+		for (VocabularySuggest voc : relList) {
+			out.add(voc.getUri());
+		}
+		return out;
+	}
+	
+	private  List<String> getStringLang(List<Language> langs){
+		List<String> out = new ArrayList<>();
+		for (Language lang : langs) {
+			out.add(lang.getId());
+		}
+		return out;
 	}
 }
