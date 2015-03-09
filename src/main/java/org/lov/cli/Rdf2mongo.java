@@ -11,6 +11,7 @@ import java.util.Properties;
 
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.bson.types.ObjectId;
 import org.jongo.Jongo;
 import org.jongo.MongoCollection;
 import org.lov.LOVException;
@@ -126,12 +127,14 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 			/* Process Languages */
 			log.info("--Inserting Languages--");
 			
-			langCollection = DropCreateCollection("languages",jongo);
+			langCollection = DropCreateCollection("languages",jongo);//jongo.getCollection("languages");
 			LanguagesExtractor langExtractor = new LanguagesExtractor(langDataset);
 			int cpt=0;
 			for (Language lang: langExtractor) {
-				langCollection.insert(lang);
-				cpt++;
+				if(langCollection.count("{iso639P3PCode:#}",lang.getIso639P3PCode())<1){//.findOne("{_id:#}", new ObjectId(agentId))
+					langCollection.insert(lang);
+					cpt++;
+				}
 			}
 			langDataset.close();
 			log.info(cpt+ " Languages inserted");
