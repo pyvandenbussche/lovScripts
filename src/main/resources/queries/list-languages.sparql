@@ -5,10 +5,11 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX dct:  <http://purl.org/dc/terms/>
 PREFIX vann: <http://purl.org/vocab/vann/>
 PREFIX lexvo: <http://lexvo.org/ontology#>
+PREFIX lvont: <http://lexvo.org/ontology#>
 
 # List languages.
 SELECT DISTINCT ?lang {
 	?lang rdfs:label ?label.
-    ?lang lexvo:iso639P3PCode ?iso639P3PCode.
-    ?lang lexvo:iso639P1Code ?iso639P1Code.
+    ?lang lvont:iso639P3Code ?iso639P3PCode.
+    ?lang lvont:iso639P1Code ?iso639P1Code.
 }

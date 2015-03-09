@@ -101,7 +101,7 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 		try {
 			//parse languages.rdf
 			log.info("Loading Languages dump: " + langDumpFile);
-			Dataset langDataset = RDFDataMgr.loadDataset(Paths.get(langDumpFile).toUri().toString(), Lang.RDFXML);
+			Dataset langDataset = RDFDataMgr.loadDataset(langDumpFile, Lang.TTL);
 			
 			//parse metrics file 
 			log.info("Loading metrics dump: " + metricsFile);
@@ -137,7 +137,7 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 			log.info(cpt+ " Languages inserted");
 			
 			/* Process Agents */
-			log.info("--Inserting Agents--");
+			/*log.info("--Inserting Agents--");
 			agentCollection = DropCreateCollection("agents",jongo);
 			AgentsExtractor agentExtractor = new AgentsExtractor(dataset);
 			cpt=0;
@@ -145,11 +145,11 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 				agentCollection.insert(agent);
 				cpt++;
 			}
-			log.info(cpt+ " Agents inserted");
+			log.info(cpt+ " Agents inserted");*/
 			
 			
 			/* Process Metrics for elements */
-			log.info("--Inserting Elements--");
+			/*log.info("--Inserting Elements--");
 			elementCollection = DropCreateCollection("elements",jongo);
 			ElementsExtractor elementsExtractor = new ElementsExtractor(metricsDataset);
 			cpt=0;
@@ -157,10 +157,10 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 				elementCollection.insert(el);
 				cpt++;
 			}
-			log.info(cpt+ " Vocabulary elements with metrics inserted");
+			log.info(cpt+ " Vocabulary elements with metrics inserted");*/
 						
 			/* create users for LOV editors*/
-			log.info("--Inserting Users--");
+			/*log.info("--Inserting Users--");
 			MongoCollection usersCollection = DropCreateCollection("users",jongo);
 			UsersExtractor userExtractor = new UsersExtractor(dataset,agentCollection);
 			cpt=0;
@@ -168,12 +168,12 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 				usersCollection.insert(user);
 				cpt++;
 			}
-			log.info(cpt+ " Users inserted");
+			log.info(cpt+ " Users inserted");*/
 			
 			
 			
 			/* Process Vocabularies */
-			log.info("--Inserting Vocabularies--");
+			/*log.info("--Inserting Vocabularies--");
 			vocabCollection = DropCreateCollection("vocabularies",jongo);	
 			//clear versions folder
 			File vocabFolder = new File(lovConfig.getProperty("VERSIONS_DIR_PATH"));
@@ -188,7 +188,7 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 			}
 			log.info(cpt+ " Vocabularies inserted");
 			dataset.close();
-			log.info("---Done---");
+			log.info("---Done---");*/
 			
 			
 		} catch (UnknownHostException e){
