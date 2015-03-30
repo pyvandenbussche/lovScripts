@@ -158,13 +158,13 @@ public class Stats extends CmdGeneral {
 				for (Vocabulary voc : vocabList) {
 					VocabularyVersionWrapper lastVersion = voc.getLastVersion();
 					if(lastVersion!=null){
-						if(lastVersion.getRelDisjunc()!=null && lastVersion.getRelDisjunc().contains(statVoc.getNsp()))statVoc.addIncomRelDisjunc(voc.getUri(),statCollection);
-						if(lastVersion.getRelEquivalent()!=null && lastVersion.getRelEquivalent().contains(statVoc.getNsp()))statVoc.addIncomRelEquivalent(voc.getUri(),statCollection);
-						if(lastVersion.getRelExtends()!=null && lastVersion.getRelExtends().contains(statVoc.getNsp()))statVoc.addIncomRelExtends(voc.getUri(),statCollection);
-						if(lastVersion.getRelGeneralizes()!=null && lastVersion.getRelGeneralizes().contains(statVoc.getNsp()))statVoc.addIncomRelGeneralizes(voc.getUri(),statCollection);
-						if(lastVersion.getRelImports()!=null && lastVersion.getRelImports().contains(statVoc.getUri()))statVoc.addIncomRelImports(voc.getUri(),statCollection);
-						if(lastVersion.getRelMetadata()!=null && lastVersion.getRelMetadata().contains(statVoc.getNsp()))statVoc.addIncomRelMetadata(voc.getUri(),statCollection);
-						if(lastVersion.getRelSpecializes()!=null && lastVersion.getRelSpecializes().contains(statVoc.getNsp()))statVoc.addIncomRelSpecializes(voc.getUri(),statCollection);
+						if(lastVersion.getRelDisjunc()!=null && (lastVersion.getRelDisjunc().contains(statVoc.getNsp()) || lastVersion.getRelDisjunc().contains(statVoc.getUri()) ))statVoc.addIncomRelDisjunc(voc.getUri(),statCollection);
+						if(lastVersion.getRelEquivalent()!=null && (lastVersion.getRelEquivalent().contains(statVoc.getNsp()) || lastVersion.getRelEquivalent().contains(statVoc.getUri()) ))statVoc.addIncomRelEquivalent(voc.getUri(),statCollection);
+						if(lastVersion.getRelExtends()!=null && (lastVersion.getRelExtends().contains(statVoc.getNsp()) || lastVersion.getRelExtends().contains(statVoc.getUri()) ))statVoc.addIncomRelExtends(voc.getUri(),statCollection);
+						if(lastVersion.getRelGeneralizes()!=null && (lastVersion.getRelGeneralizes().contains(statVoc.getNsp()) || lastVersion.getRelGeneralizes().contains(statVoc.getUri()) ))statVoc.addIncomRelGeneralizes(voc.getUri(),statCollection);
+						if(lastVersion.getRelImports()!=null && (lastVersion.getRelImports().contains(statVoc.getNsp()) || lastVersion.getRelImports().contains(statVoc.getUri()) ))statVoc.addIncomRelImports(voc.getUri(),statCollection);
+						if(lastVersion.getRelMetadata()!=null && (lastVersion.getRelMetadata().contains(statVoc.getNsp()) || lastVersion.getRelMetadata().contains(statVoc.getUri()) ))statVoc.addIncomRelMetadata(voc.getUri(),statCollection);
+						if(lastVersion.getRelSpecializes()!=null && (lastVersion.getRelSpecializes().contains(statVoc.getNsp()) || lastVersion.getRelSpecializes().contains(statVoc.getUri()) ))statVoc.addIncomRelSpecializes(voc.getUri(),statCollection);
 					}					
 				}
 				statVocabs.add(statVoc);
