@@ -41,7 +41,6 @@ public class AgentsExtractor implements Iterable<Agent> {
 	
 	/**
 	 * Extract only Software Agents
-	 * @return
 	 */
 	public Iterator<Agent> swAgents() {
 		return createDescriptionIterator("list-swagents.sparql", "agent", new OrganizationDescriber(source));

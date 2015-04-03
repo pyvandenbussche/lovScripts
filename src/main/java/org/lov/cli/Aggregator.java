@@ -209,7 +209,7 @@ public class Aggregator extends CmdGeneral {
 						VocabularySuggest vocabVersion = LovBotVocabAnalyser.analyseVersion(versionFile.toURI().toString(), vocab.getUri(), vocab.getNsp(),Lang.N3, lovConfig);
 						version.setName("v"+new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 						version.setIssued(new Date());
-						version.setFileURL(lovConfig.getProperty("LOV_DATASET_URI")+"/vocabs/"+vocab.getPrefix()+"/versions/"+vocab.getPrefix()+"-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".n3");
+						version.setFileURL(lovConfig.getProperty("LOV_DATASET_URI")+"/vocabs/"+vocab.getPrefix()+"/versions/"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".n3");
 						version.setClassNumber(vocabVersion.getNbClasses());
 						version.setPropertyNumber(vocabVersion.getNbProperties());
 						version.setInstanceNumber(vocabVersion.getNbInstances());

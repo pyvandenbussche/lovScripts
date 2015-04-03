@@ -176,6 +176,13 @@
               </jvmSettings>
             </program>
             <program>
+              <mainClass>org.lov.cli.MongoFix</mainClass>
+              <name>fix</name>
+              <jvmSettings>
+                <maxMemorySize>512m</maxMemorySize>
+              </jvmSettings>
+            </program>
+            <program>
               <mainClass>org.lov.cli.ComputeProgeny</mainClass>
               <name>progeny</name>
               <jvmSettings>

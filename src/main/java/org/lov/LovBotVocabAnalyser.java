@@ -217,7 +217,6 @@ public class LovBotVocabAnalyser {
 	 * Frequency approach to detect the most used namespace
 	 * 
 	 * @param allTerms
-	 * @return
 	 */
 	private static String getMostUsedNamespace(List<Resource> allTerms){
 		Map<String, String> URIs = new HashMap<String, String>();
