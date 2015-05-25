@@ -1,33 +1,24 @@
 package org.lov.cli;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.net.URL;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.Properties;
 
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.lov.LovUtil;
-import org.lov.SPARQLRunner;
-import org.openrdf.repository.Repository;
-import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFWriter;
-import org.openrdf.rio.n3.N3Writer;
+import org.jongo.Jongo;
+import org.jongo.MongoCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import arq.cmdline.CmdGeneral;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.NotFoundException;
+import com.mongodb.MongoClient;
 
 /**
  * A command line tool that output inline the number of vocabularies per week based on the archives analysis.
@@ -36,16 +27,24 @@ import com.hp.hpl.jena.shared.NotFoundException;
  */
 public class ComputeLOVWeekEvolDesc extends CmdGeneral {
 	private final static Logger log = LoggerFactory.getLogger(ComputeLOVWeekEvolDesc.class);
+	private final static SimpleDateFormat formatLatex = new SimpleDateFormat("yyyy-MM-dd");
+	
+	private Calendar startingDate;
+	private String hostName;
+	private String dbName;
+	private Properties lovConfig;
+	
+	
 	
 	public static void main(String... args) {
 		new ComputeLOVWeekEvolDesc(args).mainRun();
-	}
-	private String archiveFolderPath;
+	}	
 	
 	public ComputeLOVWeekEvolDesc(String[] args) {
 		super(args);
 		getUsage().startCategory("Arguments");
-		getUsage().addUsage("archiveFolderPath", "Path to the archive folder");
+		getUsage().addUsage("startingDate", "format: yyyy-MM-dd");
+		getUsage().addUsage("configFilePath", "absolute path for the configuration file  (e.g. /home/...)");
 	}
 	
 	@Override
@@ -55,98 +54,57 @@ public class ComputeLOVWeekEvolDesc extends CmdGeneral {
 	
 	@Override
 	protected String getSummary() {
-		return getCommandName() + " archiveFolderPath";
+		return getCommandName() + "configFilePath startingDate";
 	}
 
 	@Override
 	protected void processModulesAndArgs() {
-		if (getPositional().size() < 1) {
+		if (getPositional().size() < 2) {
 			doHelp();
 		}
-		archiveFolderPath = getPositionalArg(0);
+		String configFilePath = getPositionalArg(0);
+		//load properties from the config file
+		try {
+			lovConfig = new Properties();
+			File file = new File(configFilePath);
+			InputStream is = new FileInputStream(file);
+			lovConfig.load(is);
+			hostName= lovConfig.getProperty("MONGO_DB_HOST")+":"+lovConfig.getProperty("MONGO_DB_PORT");
+			dbName = lovConfig.getProperty("MONGO_DB_INSTANCE");
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// parse the requested starting date
+		try {
+			startingDate = Calendar.getInstance();
+			startingDate.setTime(formatLatex.parse(getPositionalArg(1)));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	protected void exec() {
 		try {
 			//sendPost(namespace);
-			log.info("Computing lov weekly evolution using the archive folder: " + archiveFolderPath);
-			File archiveFolder= new File(archiveFolderPath);
-			
-			//set starting date
-			Calendar dateIndex = Calendar.getInstance();
-			dateIndex.set(2011, Calendar.MARCH, 4);
-			SimpleDateFormat formatArchive = new SimpleDateFormat("yyyy_MM_dd");
-			SimpleDateFormat formatLatex = new SimpleDateFormat("yyyy-MM-dd");
-			byte[] buffer = new byte[1024];
-			StringBuilder sb = new StringBuilder();
+			log.info("Computing lov weekly evolution since: " + formatLatex.format(startingDate.getTime()));
 						
+			//bootstrap connection to MongoDB and create model
+			Jongo jongo = new Jongo(new MongoClient(hostName).getDB(dbName));
+			MongoCollection vocabCollection = jongo.getCollection("vocabularies");
 			
+			
+			
+					
+			StringBuffer sb = new StringBuffer();
 			//iterate until today
-			while(dateIndex.before(Calendar.getInstance())){
-				boolean isFound=false;
-				Calendar dateTemp = Calendar.getInstance();
-				dateTemp.setTime(dateIndex.getTime());
-				for (int i = 0; i < 7; i++) {
-					if(i>0)dateTemp.add(Calendar.DAY_OF_YEAR, 1);
-					for (final File fileEntry : archiveFolder.listFiles()) {
-				       if(fileEntry.getName().startsWith("LOV_"+formatArchive.format(dateTemp.getTime()))){
-				    	   
-				    	   
-				    	   //unzip
-					    	 //get the zip file content
-					       	ZipInputStream zis = new ZipInputStream(new FileInputStream(fileEntry.getAbsoluteFile()));
-					       	//get the zipped file list entry
-					       	ZipEntry ze = zis.getNextEntry();
-					    
-					       	while(ze!=null){
-					       	   String fileName = ze.getName();
-					              File newFile = new File(archiveFolder + File.separator + fileName);
-					               //create all non exists folders
-					               //else you will hit FileNotFoundException for compressed folder
-					               new File(newFile.getParent()).mkdirs();
-					    
-					               FileOutputStream fos = new FileOutputStream(newFile);             
-					    
-					               int len;
-					               while ((len = zis.read(buffer)) > 0) {
-					          		fos.write(buffer, 0, len);
-					               }
-					               fos.close();   
-					               ze = zis.getNextEntry();
-					       	}
-					        zis.closeEntry();
-					       	zis.close();
-					       	
-					       	File lovFile = new File(archiveFolder + File.separator + "lov.rdf");
-					       	if(lovFile.exists()){
-					       		
-					       		Repository rep = LovUtil.LoadRepositoryFromURL(new URL(lovFile.toURI().toString()),RDFFormat.RDFXML);
-								ByteArrayOutputStream out = new ByteArrayOutputStream();
-								RDFWriter writer=new N3Writer(out);
-								RepositoryConnection connec = rep.getConnection();
-								connec.export(writer);
-								connec.close();
-								rep.shutDown();
-								ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-								Model model = ModelFactory.createDefaultModel();//transform openrdf repository to jena model
-								RDFDataMgr.read(model, in, Lang.N3);
-								out.close();
-								in.close();
-								SPARQLRunner sparqlRunner = new SPARQLRunner(model);
-								int nbVocabs = sparqlRunner.getCount("count-lov-vocabularies.sparql", null, "nbVocabs", null, null);
-								sb.append(formatLatex.format(dateIndex.getTime())+"\t"+ nbVocabs);
-								sb.append(System.getProperty("line.separator"));
-					       		lovFile.delete();
-					       	}
-				    	   
-				    	   isFound=true;
-				    	   break;
-				       }
-				    }
-					if(isFound)break;
-				}
-				dateIndex.add(Calendar.WEEK_OF_YEAR, 1);
+			while(startingDate.before(Calendar.getInstance())){
+				long nbVocabs =  vocabCollection.count("{ createdInLOVAt: { $lte: # } }",startingDate.getTime());
+				sb.append(formatLatex.format(startingDate.getTime())+"\t"+nbVocabs+"\n");
+				startingDate.add(Calendar.WEEK_OF_YEAR, 1);
 			}
 			
 			log.info("####### <Summary> #######");

@@ -169,6 +169,13 @@
               </jvmSettings>
             </program>
             <program>
+              <mainClass>org.lov.cli.ComputeLOVWeekEvolDesc</mainClass>
+              <name>lovEvol</name>
+              <jvmSettings>
+                <maxMemorySize>512m</maxMemorySize>
+              </jvmSettings>
+            </program>            
+            <program>
               <mainClass>org.lov.cli.DownloadVersion</mainClass>
               <name>downloadVersion</name>
               <jvmSettings>
