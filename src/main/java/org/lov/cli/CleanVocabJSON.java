@@ -20,6 +20,7 @@ import arq.cmdline.CmdGeneral;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -63,7 +64,6 @@ public class CleanVocabJSON extends CmdGeneral {
 
 	@Override
 	protected void exec() {
-		try {
 			int cpt=0;
 			int cptErrorDate=0;
 			int cptErrorLangId=0;
@@ -75,27 +75,44 @@ public class CleanVocabJSON extends CmdGeneral {
 			// Process Vocabularies
 			startTime = System.currentTimeMillis();
 			log.info("Processing Vocabularies");
+			String prefix=null;
 			try (BufferedReader br = new BufferedReader(new FileReader(vocabulariesJsonFile))) {
 			    String line;
 			    while ((line = br.readLine()) != null) {
 			    	cpt++;
 			    	JsonElement jelement = new JsonParser().parse(line);
 					JsonObject  jobject = jelement.getAsJsonObject();
+					prefix = jobject.get("prefix").getAsString();
+					
 					JsonArray versions = jobject.getAsJsonArray("versions");
-					for (int i = 0; i < versions.size(); i++) {
-						
+					if(versions!=null){
+						for (int i = 0; i < versions.size(); i++) {
+							JsonObject  version = versions.get(i).getAsJsonObject();
+							if(version !=null){
+								JsonElement languageIds = version.getAsJsonArray("languageIds");
+								if(languageIds!=null && languageIds instanceof JsonArray){
+									for (int j = 0; j < ((JsonArray)languageIds).size(); j++) {
+										if(((JsonArray)languageIds).get(j).isJsonObject()){
+											cptErrorLangId++;
+										}
+									}
+								}
+							}
+						}
 					}
-					JsonArray languageIds = JsonArray.getAsJsonArray("languageIds");
-					System.out.println();
+					
 								    }
 			} catch (JsonSyntaxException e) {
 				// TODO Auto-generated catch block
+				System.out.println(prefix);
 				e.printStackTrace();
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
+				System.out.println(prefix);
 				e.printStackTrace();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
+				System.out.println(prefix);
 				e.printStackTrace();
 			}
 			
@@ -126,9 +143,6 @@ public class CleanVocabJSON extends CmdGeneral {
 			log.info("Number of date error:"+cptErrorDate);
 			log.info("Number of Language Ids error:"+cptErrorLangId);
 			
-		} catch (Exception ex) {
-			cmdError(ex.getMessage());
-		}
 	}
 	
 	
