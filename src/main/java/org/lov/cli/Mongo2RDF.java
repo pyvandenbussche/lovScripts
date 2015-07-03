@@ -41,6 +41,7 @@ import arq.cmdline.CmdGeneral;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.DatasetFactory;
+import com.hp.hpl.jena.query.LabelExistsException;
 import com.hp.hpl.jena.rdf.arp.JenaReader;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -202,6 +203,7 @@ public class Mongo2RDF extends CmdGeneral {
 			sthlp.addLiteralStatement(lovDatasetURI, LovConstants.DC_TERMS_FULL_TITLE, "The Linked Open Vocabularies (LOV) Catalog", null, "en");
 			sthlp.addLiteralStatement(lovDatasetURI, LovConstants.DC_TERMS_FULL_DESCRIPTION, "The LOV Catalog is a collection of RDFS and OWL ontologies designed to be reused to describe Data on the Web.", null, "en");
 			for (Vocabulary vocab : vocabs) {
+				System.out.println("Now processing: "+vocab.getPrefix());
 				cpt++;
 				String vocabUriLov = lovDatasetURI+"/vocabs/"+vocab.getPrefix();
 				sthlp.addResourceStatement(vocabUriLov, LovConstants.RDF_FULL_TYPE, LovConstants.DCAT_FULL_CATALOG_RECORD);
@@ -337,7 +339,13 @@ public class Mongo2RDF extends CmdGeneral {
 											        
 					        
 //									RDFDataMgr.read(m, version.getFileURL(), Lang.N3);
-							dataset.addNamedModel(vocab.getUri(),RDFDataMgr.loadModel(version.getFileURL(), Lang.N3));
+							
+							try {
+								dataset.addNamedModel(vocab.getUri(),RDFDataMgr.loadModel(version.getFileURL(), Lang.N3));
+							} catch (Exception e) {
+								log.error("Error accessing and or parsing vocabulary version :"+vocab.getUri()+" - "+version.getFileURL());
+								e.printStackTrace();
+							}
 							
 							OutputStream fop = new BufferedOutputStream(new FileOutputStream(file,true));
 							RDFDataMgr.write(fop, dataset, Lang.NQ) ;
