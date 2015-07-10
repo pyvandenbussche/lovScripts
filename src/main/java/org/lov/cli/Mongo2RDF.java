@@ -41,12 +41,8 @@ import arq.cmdline.CmdGeneral;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.query.LabelExistsException;
-import com.hp.hpl.jena.rdf.arp.JenaReader;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
-import com.hp.hpl.jena.rdf.model.RDFReader;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.shared.NotFoundException;
@@ -125,10 +121,13 @@ public class Mongo2RDF extends CmdGeneral {
 			StatementHelper sthlp = new StatementHelper(lovModel);
 			int cpt;
 			long startTime,estimatedTime;
-			File file = new File(lovNQDumpFile);
+			
+			
+			
+			File file = new File(lovNQDumpFile+".temp");
 			if(file.exists())file.delete();
 			file.createNewFile();
-			File filen3 = new File(lovN3DumpFile);
+			File filen3 = new File(lovN3DumpFile+".temp");
 			if(filen3.exists())filen3.delete();
 			filen3.createNewFile();
 			
@@ -203,7 +202,7 @@ public class Mongo2RDF extends CmdGeneral {
 			sthlp.addLiteralStatement(lovDatasetURI, LovConstants.DC_TERMS_FULL_TITLE, "The Linked Open Vocabularies (LOV) Catalog", null, "en");
 			sthlp.addLiteralStatement(lovDatasetURI, LovConstants.DC_TERMS_FULL_DESCRIPTION, "The LOV Catalog is a collection of RDFS and OWL ontologies designed to be reused to describe Data on the Web.", null, "en");
 			for (Vocabulary vocab : vocabs) {
-				System.out.println("Now processing: "+vocab.getPrefix());
+				log.info("Now processing: "+vocab.getPrefix());
 				cpt++;
 				String vocabUriLov = lovDatasetURI+"/vocabs/"+vocab.getPrefix();
 				sthlp.addResourceStatement(vocabUriLov, LovConstants.RDF_FULL_TYPE, LovConstants.DCAT_FULL_CATALOG_RECORD);
@@ -301,7 +300,9 @@ public class Mongo2RDF extends CmdGeneral {
 					 sthlp.addLiteralStatement(vocab.getUri(), LovConstants.VOAF_FULL_REUSED_BY_VOCABULARIES, ""+reusedByVocabs, XSDDatatype.XSDint, null);
 				}
 				
-				
+//				if(vocab.getPrefix().equals("gndo")){
+//					log.debug(vocab.getPrefix());
+//				}
 				if(vocab.getVersions()!=null){
 					Collections.sort(vocab.getVersions());
 					for (int i=0; i<vocab.getVersions().size();i++){
@@ -344,7 +345,7 @@ public class Mongo2RDF extends CmdGeneral {
 								dataset.addNamedModel(vocab.getUri(),RDFDataMgr.loadModel(version.getFileURL(), Lang.N3));
 							} catch (Exception e) {
 								log.error("Error accessing and or parsing vocabulary version :"+vocab.getUri()+" - "+version.getFileURL());
-								e.printStackTrace();
+								log.error(e.getMessage());
 							}
 							
 							OutputStream fop = new BufferedOutputStream(new FileOutputStream(file,true));
@@ -448,19 +449,38 @@ public class Mongo2RDF extends CmdGeneral {
 			fop.close();
 			fopn3.close();
 			lovDataset.close();
-			gzipIt(file);
-			gzipIt(filen3);
+			
+			
+			//when here, it means there has been no blocking error, we can then replace the existing files
+			File filenqProd = new File(lovNQDumpFile);
+			if(filenqProd.exists())filenqProd.delete();
+			File filen3Prod = new File(lovN3DumpFile);
+			if(filen3Prod.exists())filen3Prod.delete();
+			boolean success = file.renameTo(filenqProd);
+			if (!success) {
+				log.error("Not been able to replace the nq file");
+		    }
+			success = filen3.renameTo(filen3Prod);
+			if (!success) {
+				log.error("Not been able to replace the n3 file");
+		    }
+			
+			
+			gzipIt(filenqProd);
+			gzipIt(filen3Prod);
 			
 			log.info("---Done---");
 			
 		} catch (UnknownHostException e){
-			cmdError(e.getMessage());
+			log.error(e.getMessage());
 		} catch (NotFoundException ex) {
-			cmdError("Not found: " + ex.getMessage());
+			log.error("Not found: " + ex.getMessage());
 		} catch (LOVException ex) {
-			cmdError(ex.getMessage());
+			log.error(ex.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
+		} catch (Exception e) {
+			log.error(e.getMessage());
 		}
 	}
 	
@@ -484,7 +504,7 @@ public class Mongo2RDF extends CmdGeneral {
 	    	 gzos.finish();
 	    	 gzos.close(); 
 	    }catch(IOException ex){
-	       ex.printStackTrace();   
+	    	log.error(ex.getMessage());
 	    }
 	   }
 }

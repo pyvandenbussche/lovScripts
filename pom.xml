@@ -225,6 +225,13 @@
               </jvmSettings>
             </program>
             <program>
+              <mainClass>org.lov.cli.StatsOneVocab</mainClass>
+              <name>statsonevocab</name>
+              <jvmSettings>
+                <maxMemorySize>512m</maxMemorySize>
+              </jvmSettings>
+            </program>
+            <program>
               <mainClass>org.lov.cli.Mongo2RDF</mainClass>
               <name>mongo2rdf</name>
               <jvmSettings>

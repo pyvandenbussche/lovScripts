@@ -82,14 +82,15 @@ public class Stats extends CmdGeneral {
 			langCollection = jongo.getCollection("languages");
 			
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 	}
 
 	@Override
 	protected void exec() {
+		try{
 			long startTime = System.currentTimeMillis();
 			log.info("####### <Stats> #######");
 			
@@ -193,6 +194,9 @@ public class Stats extends CmdGeneral {
 				    TimeUnit.MILLISECONDS.toSeconds(estimatedTime),
 				    estimatedTime - TimeUnit.MILLISECONDS.toSeconds(estimatedTime)
 				));
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
 	}
 	
 	private MongoCollection DropCreateCollection(String collectionname, Jongo jongo){

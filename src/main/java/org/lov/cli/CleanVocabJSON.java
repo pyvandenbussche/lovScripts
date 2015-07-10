@@ -91,7 +91,9 @@ public class CleanVocabJSON extends CmdGeneral {
 			    	JsonElement jelement = new JsonParser().parse(line);
 					JsonObject  jobject = jelement.getAsJsonObject();
 					prefix = jobject.get("prefix").getAsString();
-//					System.out.println(prefix);
+//					if(prefix.equals("gndo")){
+//						System.out.println(prefix);
+//					}
 					JsonArray versions = jobject.getAsJsonArray("versions");
 					if(versions!=null){
 						for (int i = 0; i < versions.size(); i++) {
