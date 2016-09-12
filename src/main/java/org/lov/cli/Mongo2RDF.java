@@ -356,9 +356,13 @@ public class Mongo2RDF extends CmdGeneral {
 							sthlp.addLiteralStatement(vocab.getUri(), LovConstants.DC_TERMS_FULL_MODIFIED, DateYMD(version.getIssued()), XSDDatatype.XSDdate, null);
 							if(version.getLanguageIds()!=null){
 								for(String langId: version.getLanguageIds()){
-									if(langId!=null && langId!="null"){
-										Language lang = langCollection.findOne("{_id:#}", new ObjectId(langId)).as(Language.class);
-										sthlp.addResourceStatement(vocab.getUri(), LovConstants.DC_TERMS_FULL_LANGUAGE, lang.getUri());
+									if(langId!=null && !langId.contains("null")){
+                 								try{
+											Language lang = langCollection.findOne("{_id:#}", new ObjectId(langId)).as(Language.class);
+	                                                                                sthlp.addResourceStatement(vocab.getUri(), LovConstants.DC_TERMS_FULL_LANGUAGE, lang.getUri());
+										} catch (Exception e){
+											log.error("problem with the lang: "+ e.getMessage());
+										}
 									}
 								}
 							}
@@ -376,8 +380,15 @@ public class Mongo2RDF extends CmdGeneral {
 						}
 						if(version.getLanguageIds()!=null){
 							for(String langId: version.getLanguageIds()){
-								Language lang = langCollection.findOne("{_id:#}", new ObjectId(langId)).as(Language.class);
-								sthlp.addResourceStatement(versionURI, LovConstants.DC_TERMS_FULL_LANGUAGE, lang.getUri());
+								if(langId!=null && !langId.contains("null")){
+                                                                       try{
+										Language lang = langCollection.findOne("{_id:#}", new ObjectId(langId)).as(Language.class);
+										sthlp.addResourceStatement(versionURI, LovConstants.DC_TERMS_FULL_LANGUAGE, lang.getUri());
+									} catch (Exception e){
+                                                                                        log.error("problem with the lang: "+ e.getMessage());
+                                                                        }
+                                                                }
+
 							}
 						}
 						if(version.getRelDisjunc()!=null){

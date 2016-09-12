@@ -108,7 +108,7 @@ public class Stats extends CmdGeneral {
 			for (Language lang : langs) {
 				langList.add(lang);
 			}
-			
+		        log.info("language retrieved");	
 			//create a list of vocabStat and compute the number of incoming links for each
 			List<StatVocab> statVocabs = new ArrayList<StatVocab>();
 			for (Vocabulary vocab : vocabList) {
@@ -149,10 +149,12 @@ public class Stats extends CmdGeneral {
 					
 					if(lVersion.getLanguageIds()!=null){
 						for (String lang : lVersion.getLanguageIds()) {
-							StatLang statLang = new StatLang(lang);
-							statLang.addOccurrence();
-							if(statLangs.indexOf(statLang)>0)statLangs.get(statLangs.indexOf(statLang)).addOccurrence();
-							else statLangs.add(statLang);
+							if(lang!=null && !lang.contains("null")){
+								StatLang statLang = new StatLang(lang);
+								statLang.addOccurrence();
+								if(statLangs.indexOf(statLang)>0)statLangs.get(statLangs.indexOf(statLang)).addOccurrence();
+								else statLangs.add(statLang);
+							}
 						}
 					}
 				}
@@ -206,8 +208,12 @@ public class Stats extends CmdGeneral {
 	
 	private String getLanguageCode(List<Language> langList , String id){
 		for (Iterator<Language> iterator = langList.iterator(); iterator.hasNext();) {
+			try{
 			Language language = (Language) iterator.next();
 			if(language.getId().equals(id))return language.getIso639P3PCode();
+			} catch (Exception e){
+				log.error("language not found"+ e.getMessage());
+			}
 		}
 		return "unknown";
 	}
